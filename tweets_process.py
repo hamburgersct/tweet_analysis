@@ -165,7 +165,7 @@ def cleaned_en_tweet(csv_file_path, output_path):
             for tweet in tweet_list:
                 TargetFile.write(tweet)
                 TargetFile.write('\n')
-            print(os.path.join(output_path, file[:-5] + '_clean_tw.txt') + '写入成功')
+            print(os.path.join(output_path, file[:-4] + '_clean_tw.txt') + '写入成功')
             TargetFile.close()
 
 # Step 2
