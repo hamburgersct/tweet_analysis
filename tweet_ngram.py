@@ -81,9 +81,14 @@ def token_to_ngrams(file_path, bi_output_folder, tri_output_folder):
 
 
 if __name__ == '__main__':
+
     file_path = './tokenize_en_result'
     bi_gram_folder = './bi_gram_folder'
+    if 'bi_gram_folder' not in os.listdir():
+        os.mkdir(bi_gram_folder)
     tri_gram_folder = './tri_gram_folder'
+    if 'tri_gram_folder' not in os.listdir():
+        os.mkdir(tri_gram_folder)
 
     token_to_ngrams(file_path, bi_gram_folder, tri_gram_folder)
 

@@ -2,11 +2,9 @@ import re
 
 import json_lines
 import pandas as pd
-import datetime as dt
 import os
 from nltk.tokenize import TweetTokenizer
 from nltk.corpus import stopwords
-from nltk.stem.porter import PorterStemmer
 import string
 
 id = []
@@ -190,6 +188,7 @@ def merge_per_day(csv_file_path, day_path):
             day_df = pd.concat(df_list)
             day_df.to_csv(os.path.join(day_path, date + '.csv'))
             print(f'{date}文件存入成功')
+            print('**********')
             # 更改date和df_list for a new day
             day_df.drop(day_df.index, inplace=True)
             date = date_name
@@ -211,14 +210,8 @@ if __name__ == '__main__':
     print('____________json转csv________________')
     json_to_csv(file_path, output_path)
 
-    # tokens = tweet_tokenizer('./tweet_result/tweets_examples.csv')
-    # print(tokens)
-    #
-    # tokens_c1 = clear_tokens(tokens)
-    # print(tokens_c1)
-    # os.mkdir(result_path)
     print('\n')
-    print('____________汇总每日csv________________')
+    print('_____汇总每日csv存入./tweet_per_day______')
     merge_per_day(output_path, per_day_path)
 
     print('\n')
