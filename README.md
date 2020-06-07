@@ -11,6 +11,7 @@
 - [x] ngram分析及图表</br>
 - [ ] 英文LIWC</br>
 - [ ] 其他语言
+- [ ] 地理特征分析
 
 ## 输出文件
 - ```./tweet_result```存放由tweet json转换而来的csv文件
