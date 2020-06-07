@@ -11,3 +11,11 @@
 - [x] ngram分析及图表</br>
 - [ ] 英文LIWC</br>
 - [ ] 其他语言
+
+## 输出文件
+- ```./tweet_result```存放由tweet json转换而来的csv文件
+- ```./tweet_per_day```存放每日的tweet csv汇总
+- ```./clean_en_tweet```把csv中clean_text写入文件，每条一行（用来做LIWC）
+- ```./tokenize_en_result```分词处理后的文本写入
+- ```./bi(tri)_gram_folder```存储每日bgram、trigram分析结果
+- ```./bi(tri)_images```存储每日的2/3gram图像
