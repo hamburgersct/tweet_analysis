@@ -22,5 +22,8 @@ if 'tri_images' not in os.listdir():
     os.mkdir('./tri_images')
 
 os.system("python ./tweets_process.py")
+print('-----------------------')
+print('------ngram分析--------')
+print('-----------------------')
 os.system("python ./tweet_ngram.py")
 # os.system("python ./2.py")
