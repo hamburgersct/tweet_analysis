@@ -2,9 +2,6 @@ emoji==0.5.4
 plotly==4.8.1
 json_lines==0.5.0
 pandas==1.0.3
-zhon==1.1.5
 textblob==0.15.3
-hanlp==2.0.0a44
-jieba==0.42.1
 nltk==3.5
 scikit_learn==0.23.1
