@@ -5,4 +5,4 @@ pandas==1.0.3
 textblob==0.15.3
 nltk==3.5
 scikit_learn==0.23.1
-psutil==5.7.0
+psutil
