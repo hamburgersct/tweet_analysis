@@ -2,6 +2,7 @@ import nltk
 import os
 from nltk.collocations import *
 import plotly.graph_objects as go
+import tqdm
 
 
 def bi_grams(token_list):
@@ -32,12 +33,12 @@ def token_to_ngrams(file_path, bi_output_folder, tri_output_folder):
     file_names = os.listdir(file_path)
     for file_name in file_names:
         # print(file_name)
-        with open(os.path.join(file_path, file_name), 'r') as f:
+        with open(os.path.join(file_path, file_name), 'r', encoding='utf-8') as f:
             bgram = {}
             trgram = {}
-            lines = f.readlines()
+            # lines = f.readlines()
 
-            for line in lines:
+            for line in tqdm.tqdm(f):
                 tokens = line.split()
                 # print(bi_grams(tokens))
                 bgram.update(bi_grams(tokens))
@@ -82,7 +83,7 @@ def token_to_ngrams(file_path, bi_output_folder, tri_output_folder):
 
 if __name__ == '__main__':
 
-    file_path = './tokenize_en_result'
+    file_path = './clean_en_tweet'
     bi_gram_folder = './bi_gram_folder'
     if 'bi_gram_folder' not in os.listdir():
         os.mkdir(bi_gram_folder)
