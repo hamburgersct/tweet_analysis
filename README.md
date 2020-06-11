@@ -13,8 +13,8 @@ https://github.com/echen102/COVID-19-TweetIDs
 ## 当前状态
 - [x] 英文分词</br>
 - [x] ngram分析及图表</br>
-- [ ] 英文LIWC</br>
-- [ ] 其他语言
+- [x] 英文LIWC</br>
+- [x] 其他语言
 - [ ] 地理特征分析
 
 ## 输出文件
