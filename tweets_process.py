@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 import re
 
 import json_lines
@@ -6,21 +7,9 @@ import os
 from nltk.tokenize import TweetTokenizer
 from nltk.corpus import stopwords
 import string
+import tqdm
 
-id = []
-created_at = []
-text = []
-clean_text = []
-location = []
-country_code = []
-place_name = []
-place_type = []
-coordinates = []
-favorite_count = []
-retweet_count = []
-verified = []
-language = []
-retweet = []
+
 
 punctuation = list(string.punctuation)
 stop_words = stopwords.words('english') + punctuation
@@ -41,7 +30,21 @@ def json_to_csv(file_path, output_path):
     """
 
     files = os.listdir(file_path)
-    for file in files:
+    for file in tqdm.tqdm(files):
+        id = []
+        created_at = []
+        text = []
+        clean_text = []
+        location = []
+        country_code = []
+        place_name = []
+        place_type = []
+        coordinates = []
+        favorite_count = []
+        retweet_count = []
+        verified = []
+        language = []
+        retweet = []
         with open(os.path.join(file_path, file), 'r') as f:
             for item in json_lines.reader(f):
 
@@ -98,6 +101,7 @@ def json_to_csv(file_path, output_path):
         df['place_type'] = place_type
         df['place_name'] = place_name
 
+
         # print(language)
 
         df.to_csv(os.path.join(output_path, file[-18:-5] + '.csv'), sep=',', index=False, encoding='UTF-8')
@@ -112,9 +116,9 @@ def tweet_en_tokenizer(file):
     tokenizer = TweetTokenizer()
     text = ''
 
-    data = pd.read_csv(file)
-    en_data = data.loc[data['language'] == 'en']
-    for t in en_data['text']:
+    data = pd.read_csv(file, lineterminator='\n')
+    en_data = data.loc[data.iloc[:,11] == 'en']
+    for t in en_data.iloc[:,12]:
         text += t
     tokens = [i.lower() for i in tokenizer.tokenize(text)]
 
@@ -138,28 +142,29 @@ def clear_tokens(tokens):
 def tokens_en_into_txts(file_path, output_path):
     # 负责把list数据写入各自的txt文件
     files = os.listdir(file_path)
-    for file in files:
-        output_file = os.path.join(output_path, file[:-4] + '.txt')
-        with open(output_file, 'w', encoding='UTF-8') as TargetFile:
-            tokens = tweet_en_tokenizer(os.path.join(file_path, file))
-            tokens_c1 = clear_tokens(tokens)
-            # print('tokens length:' + str(len(tokens)))
-            # print('tokens:' + str(tokens))
-            # print('clear tokens length:' + str(len(tokens_c1)))
+    for file in tqdm.tqdm(files):
+        if file[:-4] + '.txt' not in os.listdir(output_path):
+            output_file = os.path.join(output_path, file[:-4] + '.txt')
+            with open(output_file, 'w', encoding='UTF-8') as TargetFile:
+                tokens = tweet_en_tokenizer(os.path.join(file_path, file))
+                tokens_c1 = clear_tokens(tokens)
+                # print('tokens length:' + str(len(tokens)))
+                # print('tokens:' + str(tokens))
+                # print('clear tokens length:' + str(len(tokens_c1)))
 
-            output = ' '.join(tokens_c1)
-            TargetFile.write(output)
-            print(output_file + '写入成功')
+                output = ' '.join(tokens_c1)
+                TargetFile.write(output)
+                print(output_file + '写入成功')
 
 # Step3
 def cleaned_en_tweet(csv_file_path, output_path):
     # 把csv中clean_text写入文件，每条一行
     csv_files = os.listdir(csv_file_path)
-    for file in csv_files:
+    for file in tqdm.tqdm(csv_files):
         output_file = os.path.join(output_path, file[:-4] + '_clean_tw.txt')
         with open(output_file, 'w', encoding='UTF-8') as TargetFile:
-            df = pd.read_csv(os.path.join(csv_file_path, file))
-            tweet_list = list(df['clean_text'])
+            df = pd.read_csv(os.path.join(csv_file_path, file), lineterminator='\n')
+            tweet_list = list(df.iloc[:,13])
             for tweet in tweet_list:
                 TargetFile.write(tweet)
                 TargetFile.write('\n')
@@ -169,50 +174,32 @@ def cleaned_en_tweet(csv_file_path, output_path):
 # Step 2
 def merge_per_day(csv_file_path, day_path):
     # 将每一天的csv文件汇总到一起
-    files = os.listdir(csv_file_path)
+    files = sorted(os.listdir(csv_file_path))
 
     day_df = pd.DataFrame()
-    df_list = []
-    count = 0
-    date = files[0][0:10]
+    # date = files[0][0:10]
 
-    for file in files:
+    for file in tqdm.tqdm(files):
         date_name = file[:-7]
-        count += 1
-        if date_name == date:
-            df = pd.read_csv(os.path.join(csv_file_path, file))
-            print(file)
-            df_list.append(df)
-        else:
-            # 先把原来的一天存好
-            day_df = pd.concat(df_list)
-            day_df.to_csv(os.path.join(day_path, date + '.csv'))
-            print(f'{date}文件存入成功')
-            print('**********')
-            # 更改date和df_list for a new day
-            day_df.drop(day_df.index, inplace=True)
-            date = date_name
-            df_list.clear()
-            df = pd.read_csv(os.path.join(csv_file_path, file))
-            print(file)
-            df_list.append(df)
-    day_df = pd.concat(df_list)
-    day_df.to_csv(os.path.join(day_path, date + '.csv'))
-    print(f'{date}文件存入成功')
+        # print(date_name)
+        day_df = pd.read_csv(os.path.join(csv_file_path, file),lineterminator='\n', sep=' ', header=False)
+        # print(day_df.shape[0])
+        day_df.to_csv(os.path.join(day_path, date_name + '.csv'), mode='a', header=False, index=False)
+        print(file,' -> '+date_name,'追加成功')
 
 if __name__ == '__main__':
-    file_path = './tweets'
+    file_path = './tweets/2020-02'
     output_path = './tweet_result'
     per_day_path = './tweet_per_day'
     result_path = './tokenize_en_result'
     cleantw_path = './clean_en_tweet'
 
     print('____________json转csv________________')
-    json_to_csv(file_path, output_path)
+    # json_to_csv(file_path, output_path)
 
     print('\n')
     print('_____汇总每日csv存入./tweet_per_day______')
-    merge_per_day(output_path, per_day_path)
+    # merge_per_day(output_path, per_day_path)
 
     print('\n')
     print('____________生成csv和txt________________')
@@ -220,4 +207,4 @@ if __name__ == '__main__':
 
     print('\n')
     print('____________clean token写入________________')
-    cleaned_en_tweet(per_day_path, cleantw_path)
+    # cleaned_en_tweet(per_day_path, cleantw_path)

@@ -11,7 +11,7 @@ def bi_grams(token_list):
     # compute frequency distribution for all the bigrams in the text
     fdist = nltk.FreqDist(bgrams)
     bigram_fq = fdist.most_common()
-    bigram_freq_25 = {k: fdist.freq(k) for k, v in dict(bigram_fq[:25]).items()}
+    bigram_freq_25 = {k: fdist.freq(k) for k, v in dict(bigram_fq[:10]).items()}
 
     # bigram_fq_25 = {k: v for k, v in dict(bigram_fq[:25]).items()}
 
@@ -23,7 +23,7 @@ def tri_grams(token_list):
 
     fdist = nltk.FreqDist(trgrams)
     trigram_fq = fdist.most_common()
-    trigram_fq_25 = {k: fdist.freq(k) for k, v in dict(trigram_fq[:25]).items()}
+    trigram_fq_25 = {k: fdist.freq(k) for k, v in dict(trigram_fq[:10]).items()}
 
     return trigram_fq_25
 
@@ -42,11 +42,13 @@ def token_to_ngrams(file_path, bi_output_folder, tri_output_folder):
                 tokens = line.split()
                 # print(bi_grams(tokens))
                 bgram.update(bi_grams(tokens))
-                # print(tri_grams(tokens))
+                print(len(tri_grams(tokens)))
                 trgram.update(tri_grams(tokens))
 
         # 生成2gram词频图
         keys = [f'({key[0]},{key[1]})' for key in list(bgram.keys())]
+        # print(len(keys))
+        # print(len(list(bgram.values())))
 
         bi_fig = go.Figure(go.Bar(
             y=keys,
@@ -83,7 +85,7 @@ def token_to_ngrams(file_path, bi_output_folder, tri_output_folder):
 
 if __name__ == '__main__':
 
-    file_path = './clean_en_tweet'
+    file_path = './tokenize_en_result'
     bi_gram_folder = './bi_gram_folder'
     if 'bi_gram_folder' not in os.listdir():
         os.mkdir(bi_gram_folder)
