@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 import pandas as pd
 import numpy as np
 import math
@@ -5,7 +6,7 @@ import os
 
 
 
-def get_country_code(per_day_path, output_path):
+def get_country_code(per_day_dir, output_dir):
 
     files = os.listdir(per_day_dir)
 
@@ -13,15 +14,13 @@ def get_country_code(per_day_path, output_path):
 
     for file in files:
         row_list = []
-        output_file = os.path.join(output_path, file[:-4]+'.csv')
+        output_file = os.path.join(output_dir, file[:-4]+'.csv')
         file_path = os.path.join(per_day_dir, file)
         df = pd.read_csv(file_path, lineterminator='\n')
-        df.columns = ['id', 'created_at', 'retweet', 'location', 'country_code', 'place_name', 'place_type', 'coordinates',
-                      'favorite_count', 'retweet_count',
-                      'verified', 'language', 'text', 'clean_text']
+        df.columns = ['created_at', 'location', 'country_code', 'place_name', 'language', 'clean_text']
         for i in range(df.shape[0]):
             if str(df.loc[i, 'country_code']) != 'nan':
-                dict1 = dict(date=df.iloc[i, 1], country_code=df.iloc[i, 4], text=df.iloc[i, 13])
+                dict1 = dict(date=df.iloc[i, 0], country_code=df.iloc[i, 2], place=df.iloc[i, 3],language = df.iloc[i,4], text=df.iloc[i, 5])
                 row_list.append(dict1)
         df_ = pd.DataFrame(row_list)
         # print(df_)
@@ -30,9 +29,9 @@ def get_country_code(per_day_path, output_path):
 
 
 if __name__ == '__main__':
-    per_day_dir = './tweet_per_day'
-    output_path = './tweet_with_loc'
+    per_day_dir = './tweet_per_day/2020-01'
+    output_dir = './tweet_with_loc'
 
     # os.mkdir(output_path)
 
-    get_country_code(per_day_dir, output_path)
+    get_country_code(per_day_dir, output_dir)
