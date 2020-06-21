@@ -7,7 +7,7 @@ import tqdm
 
 def get_country_data(country_code, language, output_dir):
     # 提取指定国家、语言的数据存入csv文件夹
-    file_path = 'F:/研究数据/loc_data'
+    file_path = 'F:/研究数据/tweet_with_loc'
     files = os.listdir(file_path)
     if output_dir not in os.listdir():
         os.mkdir(output_dir)
@@ -18,7 +18,8 @@ def get_country_data(country_code, language, output_dir):
         df = pd.read_csv(os.path.join(file_path, file), encoding='utf-8')
         df_ = df.loc[df['country_code'] == country_code, :]
         df_lang = df_.loc[df['language'] == language, :]
-        df_lang.to_csv(os.path.join(output_dir, file[:-4]), index=False)
+        if df_lang.empty is not True:
+            df_lang.to_csv(os.path.join(output_dir, file[:-4]+'.csv'), index=False)
 
 def get_perday_text(csv_dir, txt_dir):
     # 提取csv中的文本数据到txt文件夹
@@ -36,6 +37,5 @@ def get_perday_text(csv_dir, txt_dir):
             TargetFile.close()
 
 if __name__ == '__main__':
-    # get_country_data('MX', 'es', 'MX_es_data')
-    # by_date('./country_data/US_data.csv')
-    get_perday_text('./MX_es_data', 'MX_es_txt')
+    get_country_data('US', 'es', 'US_es_data')
+    # get_perday_text('./MX_es_data', 'MX_es_txt')
