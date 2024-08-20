@@ -3,6 +3,6 @@ plotly==4.8.1
 json_lines==0.5.0
 pandas==1.0.3
 textblob==0.15.3
-nltk==3.5
+nltk==3.9
 scikit_learn==0.23.1
 psutil
